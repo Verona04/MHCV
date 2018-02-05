@@ -16,3 +16,7 @@ Maria, Caroline, Veronika</h2>
 </table>
 
 
+<h2>Oppgave 1A:</h2>
+
+<h2>Oppgave 1B:</h2>
+
