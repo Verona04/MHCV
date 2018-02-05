@@ -16,6 +16,10 @@ Maria, Caroline, Veronika</h2>
 
 
 <h2>Oppgave 1A:</h2>
+Fra binære tall til hexadesimale tall: Del binærtall opp i sekvenser på 4 bits, legg evt på 1-3 0er foran dersom det ikke går opp på 4. 
+4 bits blir 1 hexadesimalsiffer. 
+Første siffer til venstre i 4-bit sekvensen ganges med 8, nummer to ganges med 4, nummer tre ganges med 2 og det siste ganges med 1. 
+Summen av de 4 tallene man sitter igjen med blir hexadesimalsifferet (0-F).
 
 <h2>Oppgave 1B:</h2>
 

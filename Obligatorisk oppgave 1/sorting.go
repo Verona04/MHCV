@@ -2,10 +2,17 @@ package algorithms
 
 // Les https://en.wikipedia.org/wiki/Bubble_sort
 func Bubble_sort_modified(list []int) {
-
-	// Skriv din kode her
-
-
+	// find the length of list n
+	n := len(list)
+	for i := 0; i < n; i++ {
+		for j := 0; j < n-1; j++ {
+			if list[j] > list[j+1] {
+				temp := list[j+1]
+				list[j+1] = list[j]
+				list[j] = temp
+			}
+		}
+	}
 }
 
 // Implementering av Bubble_sort algoritmen
