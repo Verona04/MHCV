@@ -1,18 +1,33 @@
 package algorithms
 
-// Les https://en.wikipedia.org/wiki/Bubble_sort
+import "fmt"
+
+//Vår bubblesort
 func Bubble_sort_modified(list []int) {
 	// find the length of list n
 	n := len(list)
-	for i := 0; i < n; i++ {
-		for j := 0; j < n-1; j++ {
-			if list[j] > list[j+1] {
-				temp := list[j+1]
-				list[j+1] = list[j]
-				list[j] = temp
+	swapped := true
+	for swapped {
+		swapped = false
+		for i := 0; i < n; i++ {
+			for j := 0; j < n-1; j++ {
+				if list[j] > list[j+1] {
+					list[j+1], list[j] = list[j], list[j+1]
+					swapped = true
+				}
 			}
 		}
+		n--
 	}
+}
+
+
+func main() {
+
+	list := []int{1, 6, 2, 4, 9, 0, 5, 3, 7, 8}
+	fmt.Println("Unsorted list: ", list)
+	Bubble_sort_modified(list)
+	fmt.Println("Sorted list: ", list)
 }
 
 // Implementering av Bubble_sort algoritmen
