@@ -49,3 +49,15 @@ Test: 9 total, 9 passed
 | BenchmarkQSort100             | 300000            | 8554 ns/op        |
 | BenchmarkQSort1000            | 20000	            | 73936 ns/op       |
 | BenchmarkQSort10000           | 2000	            | 828352 ns/op      |
+
+
+<h2>Oppgave 3:</h2>
+<p>Når loopen kjører brukes ca 40-45% CPU og ikke noe særlig minne. På en annen maskin, bruker den ca 25-30% CPU. </p>
+
+<h2>Oppgave 4A:</h2>
+<p>Symbolene fra 0x80 til 0x9F vises kun som firkanter når vi kjører funksjonen. Symbolene er selvsagt forskjellige, men det vise ikke med det tegnsettet vi bruker.
+Hadde vi kjørt dette på flere enn to maskiner hadde det kanskje blitt annerledes, men det hadde vi ikke tilgjengelig. </p>
+
+<h2>Oppgave 4B:</h2>
+<p>Av " € ÷ ¾ dollar " så er det kun ÷¾ som inneholder tegn fra Extended Ascii, dvs at funksjonen kun returnerer ÷¾.
+Vi hadde kun windows å utføre programmet på.</p>
