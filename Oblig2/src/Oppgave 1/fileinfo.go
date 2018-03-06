@@ -7,7 +7,12 @@ import (
 )
 
 func main() {
-	filename:="fileinfo.go"
+
+	if len(os.Args) <= 1 {
+		log.Fatalf("%s: missing file name\n", os.Args[0])
+	}
+	filename := os.Args[1]
+
 	fi, err := os.Lstat(filename)
 	if err != nil {
 		log.Fatal(err)
@@ -47,5 +52,4 @@ func main() {
 	} else {
 		fmt.Println("Is not a symbolic Link")
 	}
-
 }
