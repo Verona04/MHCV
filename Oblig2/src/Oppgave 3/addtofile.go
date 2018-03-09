@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	//	"time"
 	"os"
 	"log"
 )
@@ -38,7 +37,7 @@ func inputToFile(){
 	}
 	defer file.Close()
 
-	_, err = file.WriteString(fmt.Sprintf("%d\n%d", a, b))
+	_, err = file.WriteString(fmt.Sprintf("%d\n%d\n", a, b))
 		if err != nil {
 			log.Fatal("Cannot write to file: ", err)
 		}
