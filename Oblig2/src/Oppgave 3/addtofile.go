@@ -20,24 +20,27 @@ func inputToFile(){
 	_, err := fmt.Scanf("%d", &a)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal("Unable to read number: ", err)
+
 	}
 	fmt.Println("Enter another number: ")
 
 	fmt.Scanf("%d", &b)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal("Unable to read number: ", err)
 	}
 	fmt.Println("You entered the numbers ", a, "and ", b)
 
 	file, err := os.Create("numbers.txt")
 	if err != nil {
-		log.Fatal("Cannot create file", err)
+		log.Fatal("Cannot create file: ", err)
 	}
 	defer file.Close()
 
-	_, err = file.WriteString(fmt.Sprintln(a))
-	_, err = file.WriteString(fmt.Sprintln(b))
+	_, err = file.WriteString(fmt.Sprintf("%d\n%d", a, b))
+		if err != nil {
+			log.Fatal("Cannot write to file: ", err)
+		}
 
 }

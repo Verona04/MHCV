@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 //	"time"
+	"log"
 )
 
 
@@ -19,14 +20,14 @@ func inputNumbers(c chan int){
 	_, err := fmt.Scanf("%d", &a)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal("Unable to read number: ", err)
 	}
 	fmt.Println("Enter another number: ")
 
 	fmt.Scanf("%d", &b)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal("Unable to read number: ", err)
 	}
 	fmt.Println("You entered the numbers ", a, "and ", b)
 	go func(a int, b int) { //fikk issues med fatal error: all goroutines are asleep - deadlock, så valgte å bruke en anonym func
