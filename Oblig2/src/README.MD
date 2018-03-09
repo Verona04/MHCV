@@ -1,7 +1,7 @@
 <h1>Obligatorisk Innlevering 2<br>
 9. mars 2018</h1>
 <h2>Gruppe MCV <br>
-Maria, Caroline, Veronika</h2>
+Maria Gina Nessler, Caroline Andersen, Veronika Andersen</h2>
 
 <h2>Oppgave 1:</h2>
 <p>Se fileinfo.go og fileinfo.exe</p>
