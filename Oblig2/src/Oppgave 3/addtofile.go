@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"log"
+	"os/signal"
+	"syscall"
 )
 
 
@@ -14,6 +16,13 @@ func main() {
 
 func inputToFile(){
 	var a, b int
+	h := make(chan os.Signal, 2)
+	signal.Notify(h, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		<-h
+		log.Fatal("Exiting")
+		os.Exit(1)
+	}()
 	fmt.Println("Enter a number: ")
 
 	_, err := fmt.Scanf("%d", &a)

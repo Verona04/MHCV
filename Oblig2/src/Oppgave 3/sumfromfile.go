@@ -7,6 +7,8 @@ import (
 	"os"
 	"log"
 	"fmt"
+	"os/signal"
+	"syscall"
 )
 
 func main() {
@@ -14,6 +16,14 @@ func main() {
 }
 
 func readFromFile(filePath string){
+
+	h := make(chan os.Signal, 2)
+	signal.Notify(h, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		<-h
+		log.Fatal("Exiting")
+		os.Exit(1)
+	}()
 
 	read, err := ioutil.ReadFile(filePath)
 
