@@ -33,7 +33,7 @@ func peopleInSpace(w http.ResponseWriter, r *http.Request) {
 	foo1 := new(Astros)
 	getJSON("http://api.open-notify.org/astros.json", foo1)
 
-	t, _ := template.ParseFiles("Oblig3\\test\\go-sample-json-api\\astros.html")
+	t, _ := template.ParseFiles("Oblig3\\pepoleInSpace.html")
 	t.Execute(w, foo1)
 }
 
