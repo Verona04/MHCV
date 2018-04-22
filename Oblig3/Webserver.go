@@ -18,8 +18,20 @@ type People struct {
 	Craft string `json: craft`
 }
 
+type Stasjoner struct {
+	Navn string `json: navn`
+	Plast string `json: plast`
+}
+
 type randomJoke struct {
 	Value string `json: value`
+}
+func miljoStasjoner(w http.ResponseWriter, r *http.Request){
+	foo1:= new(Stasjoner)
+	getJSON("https://hotell.difi.no/api/json/stavanger/miljostasjoner", foo1)
+
+	t, _ := template.ParseFiles("Oblig3\\miljoStasjoner.html")
+	t.Execute(w, foo1)
 }
 
 func chuckNorris(w http.ResponseWriter, r *http.Request) {
@@ -57,6 +69,7 @@ func sayHello(w http.ResponseWriter, r *http.Request) {
 func main() {
 	http.HandleFunc("/", sayHello)
 	http.HandleFunc("/1", peopleInSpace)
+	http.HandleFunc("/2", miljoStasjoner)
 	http.HandleFunc("/3", chuckNorris)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
