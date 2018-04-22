@@ -44,6 +44,13 @@ type ContainedItems struct {
 	LastUpdated string `json:"lastUpdated"`
 }
 
+type TrumpQuote struct {
+	Quote string `json:"message"`
+}
+
+//type Quotes struct {
+//	Quote string `json:"message"`}
+
 func miljoStasjoner(w http.ResponseWriter, r *http.Request){
 	foo1:= new(Miljo)
 	getJSON("https://hotell.difi.no/api/json/stavanger/miljostasjoner", foo1)
@@ -75,6 +82,14 @@ func listeOverKommuneNummer(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, foo1)
 }
 
+func trumpThinks(w http.ResponseWriter, r *http.Request) {
+	foo1 := new(TrumpQuote)
+	getJSON("https://api.whatdoestrumpthink.com/api/v1/quotes/random", foo1)
+
+	t, _ := template.ParseFiles("Oblig3\\randomTrumpQuote.html")
+	t.Execute(w, foo1)
+}
+
 func getJSON(url string, target interface{}) error {
 	httpClient := &http.Client{Timeout: 10 * time.Second}
 	r, err := httpClient.Get(url)
@@ -97,5 +112,6 @@ func main() {
 	http.HandleFunc("/2", miljoStasjoner)
 	http.HandleFunc("/3", chuckNorris)
 	http.HandleFunc("/4", listeOverKommuneNummer)
+	http.HandleFunc("/5", trumpThinks)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
