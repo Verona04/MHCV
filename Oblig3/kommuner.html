@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kommunenummer</title>
+</head>
+<body>
+<h1>Kommunenummer</h1>
+<p>{{.ContentSummary}}</p>
+<table>
+    <thead>
+    <tr>
+        <th>Kommunenummer</th>
+        <th>Navn</th>
+        <th>Status</th>
+        <th>Sist oppdatert</th>
+    </tr>
+    </thead>
+    <tbody>
+        {{ range $key, $value := .ContainedItems }}
+                <tr>
+                    <td>
+                        {{$value.Label}}
+                    </td>
+                    <td>
+                        {{$value.Description}}
+                    </td>
+                    <td>
+                        {{$value.Status}}
+                    </td>
+                    <td>
+                        {{$value.LastUpdated}}
+                    </td>
+                </tr>
+            {{ end }}
+    </tbody>
+</table>
+
+</body>
+</html>
