@@ -18,6 +18,8 @@ type People struct {
 	Craft string `json: craft`
 }
 
+
+
 func getJSON(url string, target interface{}) error {
 	httpClient := &http.Client{Timeout: 10 * time.Second}
 	r, err := httpClient.Get(url)
@@ -45,5 +47,6 @@ func sayHello(w http.ResponseWriter, r *http.Request) {
 func main() {
 	http.HandleFunc("/", sayHello)
 	http.HandleFunc("/1", peopleInSpace)
+	http.HandleFunc("/3", chuckNorris)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
