@@ -18,7 +18,17 @@ type People struct {
 	Craft string `json: craft`
 }
 
+type randomJoke struct {
+	Value string `json: value`
+}
 
+func chuckNorris(w http.ResponseWriter, r *http.Request) {
+	foo1 := new(randomJoke)
+	getJSON("https://api.chucknorris.io/jokes/random", foo1)
+
+	t, _ := template.ParseFiles("Oblig3\\randomchucknorrisjoke.html")
+	t.Execute(w, foo1)
+}
 
 func getJSON(url string, target interface{}) error {
 	httpClient := &http.Client{Timeout: 10 * time.Second}
