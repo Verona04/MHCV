@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Miljøstasjoner</title>
+</head>
+<body>
+<h1>Miljøstasjoner</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Navn</th>
+        <th>Plast</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{ range $key, $value := .Stasjoner }}
+    <tr>
+        <td>
+        {{$value.Navn}}
+        </td>
+        <td>
+        {{$value.Plast}}
+        </td>
+    </tr>
+    {{ end }}
+    </tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>People in space</title>
+</head>
+<body>
+<h1>People in space</h1>
+<p>{{.Number}} people in space</p>
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Craft</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{ range $key, $value := .People }}
+    <tr>
+        <td>
+        {{$value.Name}}
+        </td>
+        <td>
+        {{$value.Craft}}
+        </td>
+    </tr>
+    {{ end }}
+    </tbody>
+</table>
+</body>
+</html>
