@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        table {
+            width: 100%;
+        }
+        td.center {
+            text-align: center;
+        }
+        td.header {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<h1>Parkeringsplasser</h1>
+<table>
+    <thead>
+    <tr>
+        <td class="header">Navn</td>
+        <td class="header">Adresse</td>
+        <td class="header">Postnummer</td>
+        <td class="header">Poststed</td>
+        <td class="header">Breddegrad</td>
+        <td class="header">Lengdegrad</td>
+    </tr>
+    </thead>
+    <tbody>
+    {{range .}}
+        <tr>
+            <td>
+            {{.Navn}}
+            </td>
+            <td>
+            {{.Adresse}}
+            </td>
+            <td>
+            {{.Postnummer}}
+            </td>
+            <td>
+            {{.Poststed}}
+            </td>
+            <td>
+            {{.Breddegrad}}
+            </td>
+            <td>
+            {{.Lengdegrad}}
+            </td>
+        </tr>
+    {{end}}
+    </tbody>
+</table>
+</body>
+</html>
