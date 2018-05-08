@@ -59,13 +59,24 @@ func parkeringsomraade (w http.ResponseWriter, r *http.Request) {
 	var parkeringsSøk []ParkeringsOmraade
 	antallTreff := 0
 	search := r.URL.Query().Get("search")
+	ladestasjoner := r.URL.Query().Get("ladestasjoner")
+	hc := r.URL.Query().Get("hc")
 
 	for _, parkering := range parkeringer {
 		lowerParkeringPoststed := strings.ToLower(parkering.AktivVersjon.Poststed)
 		lowerSøk := strings.ToLower(search)
 		lowerSøkParkeringNavn := strings.ToLower(parkering.AktivVersjon.Navn)
 
-		if strings.Contains(lowerParkeringPoststed, lowerSøk) || strings.Contains(lowerSøkParkeringNavn, lowerSøk) {
+		if strings.Contains(lowerParkeringPoststed, lowerSøk) ||
+			strings.Contains(lowerSøkParkeringNavn, lowerSøk) {
+
+			if hc == "on" && parkering.AktivVersjon.AntallForflytnigshemmede == 0 {
+				continue
+			}
+
+			if ladestasjoner == "on" && parkering.AktivVersjon.AntallLadeplasser == 0{
+				continue
+			}
 			parkeringsSøk = append(parkeringsSøk, parkering)
 			antallTreff++
 
