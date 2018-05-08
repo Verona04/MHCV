@@ -7,15 +7,31 @@ import (
 	"time"
 	"encoding/json"
 	"text/template"
-
 	"io/ioutil"
 	"fmt"
+	"strings"
 )
 
-func main() {
-	http.HandleFunc("/", parkeringsomraade)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+type ParkeringsOmraade struct {
+	Breddegrad 		float64 		`json:"breddegrad"`
+	Lengdegrad 		float64 		`json:"lengdegrad"`
+	AktivVersjon 	AktivVersjon 	`json:"aktivVersjon"`
 }
+
+type AktivVersjon struct {
+	Navn 							string 	`json:"navn"`
+	Adresse 						string 	`json:"adresse"`
+	Postnummer						string 	`json:"postnummer"`
+	Poststed 						string 	`json:"poststed"`
+	AntallLadeplasser 				int 	`json:"antallLadeplasser"`
+	AntallAvgiftsbelagtePlasser 	int 	`json:"antallAvgiftsbelagtePlasser"`
+	AntallAvgiftsfriePlasser		int 	`json:"antallAvgiftsfriePlasser"`
+	AntallForflytnigshemmede 		int 	`json:"antallForflytningshemmede"`
+	VurderingForflytningshemmede 	string 	`json:"vurderingForflytningshemmede"`
+	TypeParkeringsomrade 			string 	`json:"typeParkeringsomrade"`
+}
+
+
 
 //func parking(w http.ResponseWriter, r *http.Request) {
 //	message := "Parkeringsplasser"
@@ -38,37 +54,37 @@ func getJSON(url string, target interface{}) error {
 }
 
 func parkeringsomraade (w http.ResponseWriter, r *http.Request) {
-	foo1 := make([]ParkeringsOmraade, 0)
-	getJSON("https://www.vegvesen.no/ws/no/vegvesen/veg/parkeringsomraade/parkeringsregisteret/v1/parkeringsomraade?datafelter=kart", &foo1)
+	parkeringer := make([]ParkeringsOmraade, 0)
+	getJSON("https://www.vegvesen.no/ws/no/vegvesen/veg/parkeringsomraade/parkeringsregisteret/v1/parkeringsomraade?datafelter=alle", &parkeringer)
+	var parkeringsSøk []ParkeringsOmraade
+	antallTreff := 0
+	search := r.URL.Query().Get("search")
+
+	for _, parkering := range parkeringer {
+		lowerParkeringPoststed := strings.ToLower(parkering.AktivVersjon.Poststed)
+		lowerSøk := strings.ToLower(search)
+		lowerSøkParkeringNavn := strings.ToLower(parkering.AktivVersjon.Navn)
+
+		if strings.Contains(lowerParkeringPoststed, lowerSøk) || strings.Contains(lowerSøkParkeringNavn, lowerSøk) {
+			parkeringsSøk = append(parkeringsSøk, parkering)
+			antallTreff++
+
+			if antallTreff > 50 {
+				break
+			}
+		}
+	}
+
+
 	t, err := template.ParseFiles("Oblig4\\parkeringsomraade.html")
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
+		return
 	}
-	t.Execute(w, foo1)
+	t.Execute(w, parkeringsSøk)
 }
 
-type ParkeringsOmraade struct {
-	Navn string `json:"navn"`
-	Adresse string `json:"adresse"`
-	Postnummer string `json:"postnummer"`
-	Poststed string `json:"poststed"`
-	Breddegrad float64 `json:"breddegrad"`
-	Lengdegrad float64 `json:"lengdegrad"`
+func main() {
+	http.HandleFunc("/", parkeringsomraade)
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
-
-/*
-{
-	"id":8192,
-	"parkeringstilbyderNavn":"TROMSØ OFFENTLIGE PARKERING AS",
-	"breddegrad":69.667223,
-	"lengdegrad":19.019822,
-	"deaktivert":null,
-	"versjonsnummer":1,
-	"navn":"Tomasjordnes",
-	"adresse":"Tomasjordnes 37",
-	"postnummer":"9024",
-	"poststed":"TOMASJORD",g i henhold til parkeringsforskriften § 62",
-	"aktiveringstidspunkt":"2018-01-08T11:01:34Z"
-}
- */
-
