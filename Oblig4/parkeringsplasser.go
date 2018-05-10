@@ -12,6 +12,7 @@ import (
 	"strings"
 	"math"
 	"strconv"
+	"sort"
 )
 
 type ParkeringsOmraade struct {
@@ -19,6 +20,7 @@ type ParkeringsOmraade struct {
 	Breddegrad 		float64 		`json:"breddegrad"`
 	Lengdegrad 		float64 		`json:"lengdegrad"`
 	AktivVersjon 	AktivVersjon 	`json:"aktivVersjon"`
+	Avstand 		float64
 }
 
 type AktivVersjon struct {
@@ -95,6 +97,8 @@ func apiForRadiusSøk(w http.ResponseWriter, r *http.Request) {
 	antallTreff := 0
 	for _, parkering := range parkeringer {
 		parkDistance := distance(parkering.Breddegrad, parkering.Lengdegrad, latitude, longitude)
+		parkering.Avstand = parkDistance
+
 		if parkDistance <= radiusMeters {
 			parkeringsSøk = append(parkeringsSøk, parkering)
 			antallTreff++
@@ -103,6 +107,11 @@ func apiForRadiusSøk(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
+
+	sort.Slice(parkeringsSøk, func(i, j int) bool {
+		return parkeringsSøk[i].Avstand < parkeringsSøk[j].Avstand
+	})
+
 	var result []byte
 	result, _ = json.Marshal(parkeringsSøk)
 	w.Header().Set("Content-Type", "application/json")

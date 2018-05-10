@@ -5,21 +5,28 @@ var controls = {}
 var zoom = 12
 var moveTimeout = null
 var vectorLayer = null
+var enableRecenter = true
+
 var map = new OpenLayers.Map({
     div: "mapdiv",
     eventListeners: {
         featureclick: function (e) {
             var parkid = e.feature.data.parkid
             if (parkid) {
-                /*$('#searchResult').animate({
-                    scrollTop: $('.line-parkid-' + parkid).offset().top - 100
-                })*/
                 $('.line-parkid-' + parkid)[0].scrollIntoView()
                 $('.line-parkid-' + parkid).effect("highlight", {}, 1000)
             }
         }
     }
 })
+map.events.register('click', map, function (e) {
+    var position = map.getLonLatFromPixel(e.xy);
+    var lonLat = new OpenLayers.LonLat(position.lon, position.lat)
+        .transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"))
+
+    getParking(1500, lonLat.lon, lonLat.lat)
+})
+
 // jquery-funksjon som kjører i det vi åpner siden
 $(function() {
     map.addLayer(new OpenLayers.Layer.OSM())
@@ -43,6 +50,20 @@ function addMoveEventListener () {
 
         }})
 }
+
+function areasearch(event) {
+    enableRecenter = false
+    var position = map.getCenter()
+    var lonLat = new OpenLayers.LonLat(position.lon, position.lat)
+        .transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"))
+    getParking(10000, lonLat.lon, lonLat.lat)
+
+    $('#searchResult').animate({scrollTop: 0})
+
+    event.preventDefault()
+    event.stopPropagation()
+}
+
 // Funksjon for å sentrere kartet til nettleserens posisjon.
 function myPosition (event) {
     if ("geolocation" in navigator) {
@@ -94,6 +115,7 @@ function getParking(radius, longitude, latitude) {
 }
 // Oppslag for parkering innenfor en gitt søketekst.
 function searchParking (event) {
+    enableRecenter = true
     var search = document.getElementById('search').value
     $.get('/api/parkering/search?search=' + search).then(parkingSearchResult)
     event.preventDefault()
@@ -167,7 +189,9 @@ function runSearch (event) {
 
 function lagResultatListe (resultater) {
 
-    centerOnMap(resultater[0].id, resultater[0].breddegrad, resultater[0].lengdegrad, 11)
+    if (enableRecenter) {
+        centerOnMap(resultater[0].id, resultater[0].breddegrad, resultater[0].lengdegrad, 11)
+    }
 
     var searchResults = $('#searchResult')
     searchResults.empty()
