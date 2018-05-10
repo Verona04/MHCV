@@ -1,0 +1,33 @@
+table {
+    width: 100%;
+}
+td.center {
+    text-align: center;
+}
+td.header {
+    font-weight: bold;
+}
+table, th, td {
+    border: 1px solid black;
+}
+input[type='checkbox'] {
+    float: left;
+    margin-right: 5px;
+}
+input[type='checkbox'] + label {
+    display: block;
+    width: 800px;
+}
+
+#mapdiv {
+    width: 100%;
+    height: 400px;
+}
+
+div.parkering-navn {
+    margin-bottom: 6px;
+}
+
+div.parkring-type {
+    margin-bottom: 4px;
+}

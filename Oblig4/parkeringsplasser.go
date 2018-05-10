@@ -10,9 +10,12 @@ import (
 	"io/ioutil"
 	"fmt"
 	"strings"
+	"math"
+	"strconv"
 )
 
 type ParkeringsOmraade struct {
+	Id 				int 		`json:"id"`
 	Breddegrad 		float64 		`json:"breddegrad"`
 	Lengdegrad 		float64 		`json:"lengdegrad"`
 	AktivVersjon 	AktivVersjon 	`json:"aktivVersjon"`
@@ -31,6 +34,22 @@ type AktivVersjon struct {
 	TypeParkeringsomrade 			string 	`json:"typeParkeringsomrade"`
 }
 
+func hsin(theta float64) float64 {
+	return math.Pow(math.Sin(theta/2), 2)
+}
+func distance(lat1, lon1, lat2, lon2 float64) float64 {
+	// convert to radians
+	// must cast radius as float to multiply later
+	var la1, lo1, la2, lo2, r float64
+	la1 = lat1 * math.Pi / 180
+	lo1 = lon1 * math.Pi / 180
+	la2 = lat2 * math.Pi / 180
+	lo2 = lon2 * math.Pi / 180
+	r = 6378100 // Earth radius in METERS
+	// calculate
+	h := hsin(la2-la1) + math.Cos(la1)*math.Cos(la2)*hsin(lo2-lo1)
+	return 2 * r * math.Asin(math.Sqrt(h))
+}
 
 
 //func parking(w http.ResponseWriter, r *http.Request) {
@@ -95,7 +114,63 @@ func parkeringsomraade (w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, parkeringsSøk)
 }
 
+func apiForRadiusSøk(w http.ResponseWriter, r *http.Request) {
+	var longitude, latitude, radiusMeters float64
+	longitude, _ = strconv.ParseFloat(r.URL.Query().Get("longitude"), 64)
+	latitude, _ = strconv.ParseFloat(r.URL.Query().Get("latitude"), 64)
+	radiusMeters, _ = strconv.ParseFloat(r.URL.Query().Get("radius"), 64)
+
+	parkeringer := make([]ParkeringsOmraade, 0)
+	getJSON("https://www.vegvesen.no/ws/no/vegvesen/veg/parkeringsomraade/parkeringsregisteret/v1/parkeringsomraade?datafelter=alle", &parkeringer)
+
+	var parkeringsSøk []ParkeringsOmraade
+	antallTreff := 0
+	for _, parkering := range parkeringer {
+		parkDistance := distance(parkering.Breddegrad, parkering.Lengdegrad, latitude, longitude)
+		if parkDistance <= radiusMeters {
+			parkeringsSøk = append(parkeringsSøk, parkering)
+			antallTreff++
+			if antallTreff > 50 {
+				break
+			}
+		}
+	}
+	var result []byte
+	result, _ = json.Marshal(parkeringsSøk)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(result)
+}
+
+func apiForTekstSøk(w http.ResponseWriter, r *http.Request) {
+	parkeringer := make([]ParkeringsOmraade, 0)
+	getJSON("https://www.vegvesen.no/ws/no/vegvesen/veg/parkeringsomraade/parkeringsregisteret/v1/parkeringsomraade?datafelter=alle", &parkeringer)
+
+	search := strings.ToLower(r.URL.Query().Get("search"))
+	var parkeringsSøkeresultat []ParkeringsOmraade
+	antallTreff := 0
+	for _, parkering := range parkeringer {
+		lowerPoststed := strings.ToLower(parkering.AktivVersjon.Poststed)
+		lowerNavn := strings.ToLower(parkering.AktivVersjon.Navn)
+		if strings.HasPrefix(lowerPoststed, search) || strings.Contains(lowerNavn, search) {
+			parkeringsSøkeresultat = append(parkeringsSøkeresultat, parkering)
+			antallTreff++
+			if antallTreff > 50 {
+				break
+			}
+		}
+	}
+	var result []byte
+	result, _ = json.Marshal(parkeringsSøkeresultat)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(result)
+}
+
 func main() {
 	http.HandleFunc("/", parkeringsomraade)
+	// JSON-APIer for å gjøre diverse søk
+	http.HandleFunc("/api/parkering/radius", apiForRadiusSøk)
+	http.HandleFunc("/api/parkering/search", apiForTekstSøk)
+	// Gjør filer i public/ tilgjengelig fra websiden.
+	http.Handle("/public/", http.StripPrefix("/public/", http.FileServer(http.Dir("Oblig4/public/"))))
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
