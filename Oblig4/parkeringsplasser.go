@@ -89,6 +89,8 @@ func apiForRadiusSøk(w http.ResponseWriter, r *http.Request) {
 	longitude, _ = strconv.ParseFloat(r.URL.Query().Get("longitude"), 64)
 	latitude, _ = strconv.ParseFloat(r.URL.Query().Get("latitude"), 64)
 	radiusMeters, _ = strconv.ParseFloat(r.URL.Query().Get("radius"), 64)
+	ladestasjoner := r.URL.Query().Get("ladestasjoner")
+	hc := r.URL.Query().Get("hc")
 
 	parkeringer := make([]ParkeringsOmraade, 0)
 	getJSON("https://www.vegvesen.no/ws/no/vegvesen/veg/parkeringsomraade/parkeringsregisteret/v1/parkeringsomraade?datafelter=alle", &parkeringer)
@@ -100,6 +102,13 @@ func apiForRadiusSøk(w http.ResponseWriter, r *http.Request) {
 		parkering.Avstand = parkDistance
 
 		if parkDistance <= radiusMeters {
+			if hc == "on" && parkering.AktivVersjon.AntallForflytnigshemmede == 0 {
+				continue
+			}
+
+			if ladestasjoner == "on" && parkering.AktivVersjon.AntallLadeplasser == 0{
+				continue
+			}
 			parkeringsSøk = append(parkeringsSøk, parkering)
 			antallTreff++
 			if antallTreff > 150 {

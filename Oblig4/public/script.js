@@ -58,6 +58,7 @@ function areasearch(event) {
         .transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"))
     getParking(10000, lonLat.lon, lonLat.lat)
 
+
     $('#searchResult').animate({scrollTop: 0})
 
     event.preventDefault()
@@ -105,13 +106,15 @@ function parkingSearchResult (res) {
 }
 // Oppslag for parkering innenfor et gitt område oppgitt i lengde og breddegrader.
 function getParking(radius, longitude, latitude) {
+    var hc = document.getElementById('hc').checked ? 'on' : ''
+    var ladestasjoner = document.getElementById('ladestasjoner').checked ? 'on' : ''
     if (!radius) {
         radius = 1500
     }
     $.get(
         '/api/parkering/radius?radius=' + radius +
         '&longitude=' + longitude +
-        '&latitude=' + latitude).then(parkingSearchResult)
+        '&latitude=' + latitude+'&hc=' + hc + '&ladestasjoner=' + ladestasjoner).then(parkingSearchResult)
 }
 // Oppslag for parkering innenfor en gitt søketekst.
 function searchParking (event) {
