@@ -53,12 +53,6 @@ func distance(lat1, lon1, lat2, lon2 float64) float64 {
 	return 2 * r * math.Asin(math.Sqrt(h))
 }
 
-
-//func parking(w http.ResponseWriter, r *http.Request) {
-//	message := "Parkeringsplasser"
-//	w.Write([]byte(message))
-//}
-
 func getJSON(url string, target interface{}) error {
 	httpClient := &http.Client{Timeout: 10 * time.Second}
 	r, err := httpClient.Get(url)

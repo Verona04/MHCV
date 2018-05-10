@@ -3,7 +3,6 @@ var features = {}
 var openFeature = null
 var controls = {}
 var zoom = 12
-var moveTimeout = null
 var vectorLayer = null
 var enableRecenter = true
 
@@ -19,38 +18,13 @@ var map = new OpenLayers.Map({
         }
     }
 })
-/*map.events.register('click', map, function (e) {
-    var position = map.getLonLatFromPixel(e.xy);
-    var lonLat = new OpenLayers.LonLat(position.lon, position.lat)
-        .transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"))
-
-    getParking(1500, lonLat.lon, lonLat.lat)
-})
-*/
 
 // jquery-funksjon som kjører i det vi åpner siden
 $(function() {
     map.addLayer(new OpenLayers.Layer.OSM())
-    addMoveEventListener()
     myPosition(null)
     initOpenLayersMap()
 })
-// Funksjon som gjør parkeringsplass-søk når vi flytter rundt på kartet.
-function addMoveEventListener () {
-    map.events.listeners.move.unshift({func: function(ev) {
-
-           /* clearTimeout(moveTimeout)
-            moveTimeout = setTimeout(function() {
-                var position = map.getCenter()
-                var lonLat = new OpenLayers.LonLat(position.lon, position.lat)
-                    .transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"))
-                var parkRadius = 1500 //document.getElementById('parkRadius').value
-                getParking(parkRadius, lonLat.lon, lonLat.lat)
-            }, 500)
-            */
-
-        }})
-}
 
 function areasearch(event) {
     enableRecenter = false
@@ -58,7 +32,6 @@ function areasearch(event) {
     var lonLat = new OpenLayers.LonLat(position.lon, position.lat)
         .transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"))
     getParking(10000, lonLat.lon, lonLat.lat)
-
 
     $('#searchResult').animate({scrollTop: 0})
 
