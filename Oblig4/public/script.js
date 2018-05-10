@@ -17,7 +17,7 @@ $(function() {
 function addMoveEventListener () {
     map.events.listeners.move.unshift({func: function(ev) {
 
-            clearTimeout(moveTimeout)
+           /* clearTimeout(moveTimeout)
             moveTimeout = setTimeout(function() {
                 var position = map.getCenter()
                 var lonLat = new OpenLayers.LonLat(position.lon, position.lat)
@@ -25,7 +25,7 @@ function addMoveEventListener () {
                 var parkRadius = 1500 //document.getElementById('parkRadius').value
                 getParking(parkRadius, lonLat.lon, lonLat.lat)
             }, 500)
-
+            */
 
         }})
 }
@@ -93,7 +93,7 @@ function centerOnMap (id, breddegrad, lengdegrad) {
         map.getProjectionObject() // to Spherical Mercator Projection
     )
     map.setCenter(lonLat, 16)
-    createPopup(features[id])
+    //createPopup(features[id])
 }
 // Lager en popup i openlayers.
 function createPopup (feature) {
@@ -158,8 +158,11 @@ function lagResultatListe (resultater) {
 <div class="row" style="border: 2px solid #000; margin: 10px;">
     <div class="col-md-12">
         <div class="row">
-            <div class="col-md-12 parkering-navn">
+            <div class="col-md-10 parkering-navn">
                 <b>${park.aktivVersjon.navn}</b>
+            </div>
+            <div class="col-md-2" style="text-align: right;">
+                <a href="#" onClick="centerOnMap(${park.id}, ${park.breddegrad}, ${park.lengdegrad})">Vis på kart</a>
             </div>
         </div>
 

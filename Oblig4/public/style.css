@@ -31,3 +31,8 @@ div.parkering-navn {
 div.parkring-type {
     margin-bottom: 4px;
 }
+
+#searchResult {
+    overflow-y: scroll;
+    height: 380px;
+}
