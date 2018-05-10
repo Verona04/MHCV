@@ -98,7 +98,7 @@ func apiForRadiusSøk(w http.ResponseWriter, r *http.Request) {
 		if parkDistance <= radiusMeters {
 			parkeringsSøk = append(parkeringsSøk, parkering)
 			antallTreff++
-			if antallTreff > 50 {
+			if antallTreff > 150 {
 				break
 			}
 		}
@@ -136,7 +136,7 @@ func apiForTekstSøk(w http.ResponseWriter, r *http.Request) {
 			parkeringsSøk = append(parkeringsSøk, parkering)
 			antallTreff++
 
-			if antallTreff > 50 {
+			if antallTreff > 150 {
 				break
 			}
 		}
