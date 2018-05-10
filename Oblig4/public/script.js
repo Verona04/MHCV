@@ -65,6 +65,8 @@ function parkingSearchResult (res) {
         )
         vectorLayer.addFeatures(features[park.id])
     })
+
+    lagResultatListe(res)
 }
 // Oppslag for parkering innenfor et gitt område oppgitt i lengde og breddegrader.
 function getParking(radius, longitude, latitude) {
@@ -131,4 +133,62 @@ function initOpenLayersMap () {
     }
     map.addControl(controls['selector'])
     controls['selector'].activate()
+}
+
+function runSearch (event) {
+    var searchTerm = document.getElementById('search').value
+    var hc = document.getElementById('hc').checked ? 'on' : ''
+    var ladestasjoner = document.getElementById('ladestasjoner').checked ? 'on' : ''
+
+    $.get(
+        '/api/parkering/search?search=' + searchTerm + '&hc=' + hc + '&ladestasjoner=' + ladestasjoner
+    ).then(parkingSearchResult)
+
+    event.stopPropagation()
+    event.preventDefault()
+    return false
+}
+
+function lagResultatListe (resultater) {
+    var searchResults = $('#searchResult')
+    searchResults.empty()
+    resultater.map(function(park) {
+
+        var line = $(`
+<div class="row" style="border: 2px solid #000; margin: 10px;">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12 parkering-navn">
+                <b>${park.aktivVersjon.navn}</b>
+            </div>
+        </div>
+
+        <div class="row parkring-type">
+            <div class="col-md-4">
+                ${park.aktivVersjon.typeParkeringsomrade}<br>
+            </div>
+            <div class="col-md-8">
+                ${park.aktivVersjon.adresse} ${park.aktivVersjon.postnummer} ${park.aktivVersjon.poststed}<br>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                ${park.aktivVersjon.antallAvgiftsfriePlasser} Antall Avgiftsfrie Plasser<br>
+                ${park.aktivVersjon.antallAvgiftsbelagtePlasser} Antall Avgiftsbelagte Plasser<br>
+                ${park.aktivVersjon.antallLadeplasser} Antall Ladeplasser<br>
+            </div>
+
+            <div class="col-md-8">
+                                   
+                ${park.aktivVersjon.antallForflytningshemmede} Antall Forflytnigshemmede<br>
+                ${park.aktivVersjon.vurderingForflytningshemmede}<br>
+            </div>
+        </div>
+    </div>
+</div>
+`)
+
+        searchResults.append(line)
+    })
 }

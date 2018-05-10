@@ -17,7 +17,7 @@
 <div class="container">
 
     <h1>Parkeringsplasser</h1>
-    <form class="form-inline" action='/' method='GET'>
+    <form class="form-inline" onSubmit="runSearch(event)">
         <div class="row">
             <div class="col-md-12 form-group">
                 <input name='search' type="text" class="form-control" id="search" placeholder="Poststed/navn">
@@ -42,82 +42,13 @@
     <div class="row">
         <div class='col-md-12'>
             <div id="mapdiv"></div>
-            <i>[Sett inn beskrivelse av valgt parkeringsplass? Tilleggsinfo etc.. værmelding?]</i>
         </div>
     </div>
-{{range .}}
-    <div class="row" style="border: 2px solid #000; margin: 10px;">
-        <div class="col-md-12">
-            <div class="row">
-                <div class="col-md-12 parkering-navn">
-                    <b>{{.AktivVersjon.Navn}}</b>
-                </div>
-            </div>
 
-            <div class="row parkring-type">
-                <div class="col-md-4">
-                    {{.AktivVersjon.TypeParkeringsomrade}}<br>
-                </div>
-                <div class="col-md-8">
-                    {{.AktivVersjon.Adresse}} {{.AktivVersjon.Postnummer}} {{.AktivVersjon.Poststed}}<br>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-4">
-                    {{.AktivVersjon.AntallAvgiftsfriePlasser}} Antall Avgiftsfrie Plasser<br>
-                    {{.AktivVersjon.AntallAvgiftsbelagtePlasser}} Antall Avgiftsbelagte Plasser<br>
-                    {{.AktivVersjon.AntallLadeplasser}} Antall Ladeplasser<br>
-                </div>
-
-                <div class="col-md-8">
-
-                    {{.AktivVersjon.AntallForflytnigshemmede}} Antall Forflytnigshemmede<br>
-                    {{.AktivVersjon.VurderingForflytningshemmede}}<br>
-                </div>
-            </div>
+    <div class="row">
+        <div class='col-md-12' id="searchResult">
         </div>
     </div>
-{{end}}
-
-    <!--
-<table style="width:100%">
-    <thead>
-    <tr>
-        <td class="header">Navn</td>
-        <td class="header">Adresse</td>
-        <td class="header">Postnummer</td>
-        <td class="header">Poststed</td>
-        <td class="header">Breddegrad</td>
-        <td class="header">Lengdegrad</td>
-    </tr>
-    </thead>
-    <tbody>
-    {{range .}}
-        <tr>
-            <td>
-            {{.AktivVersjon.Navn}}
-            </td>
-            <td>
-            {{.AktivVersjon.Adresse}}
-            </td>
-            <td>
-            {{.AktivVersjon.Postnummer}}
-            </td>
-            <td>
-            {{.AktivVersjon.Poststed}}
-            </td>
-            <td>
-            {{.Breddegrad}}
-            </td>
-            <td>
-            {{.Lengdegrad}}
-            </td>
-        </tr>
-    {{end}}
-    </tbody>
-</table>
--->
 </div>
 
 <script src="/public/script.js"></script>

@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 	"encoding/json"
-	"text/template"
+
 	"io/ioutil"
 	"fmt"
 	"strings"
@@ -73,45 +73,13 @@ func getJSON(url string, target interface{}) error {
 }
 
 func parkeringsomraade (w http.ResponseWriter, r *http.Request) {
-	parkeringer := make([]ParkeringsOmraade, 0)
-	getJSON("https://www.vegvesen.no/ws/no/vegvesen/veg/parkeringsomraade/parkeringsregisteret/v1/parkeringsomraade?datafelter=alle", &parkeringer)
-	var parkeringsSøk []ParkeringsOmraade
-	antallTreff := 0
-	search := r.URL.Query().Get("search")
-	ladestasjoner := r.URL.Query().Get("ladestasjoner")
-	hc := r.URL.Query().Get("hc")
-
-	for _, parkering := range parkeringer {
-		lowerParkeringPoststed := strings.ToLower(parkering.AktivVersjon.Poststed)
-		lowerSøk := strings.ToLower(search)
-		lowerSøkParkeringNavn := strings.ToLower(parkering.AktivVersjon.Navn)
-
-		if strings.Contains(lowerParkeringPoststed, lowerSøk) ||
-			strings.Contains(lowerSøkParkeringNavn, lowerSøk) {
-
-			if hc == "on" && parkering.AktivVersjon.AntallForflytnigshemmede == 0 {
-				continue
-			}
-
-			if ladestasjoner == "on" && parkering.AktivVersjon.AntallLadeplasser == 0{
-				continue
-			}
-			parkeringsSøk = append(parkeringsSøk, parkering)
-			antallTreff++
-
-			if antallTreff > 50 {
-				break
-			}
-		}
-	}
-
-
-	t, err := template.ParseFiles("Oblig4\\parkeringsomraade.html")
+	raw, err := ioutil.ReadFile("Oblig4\\parkeringsomraade.html")
 	if err != nil {
-		fmt.Printf("Error: %v\n", err)
+		fmt.Print(w, "OOps")
 		return
 	}
-	t.Execute(w, parkeringsSøk)
+	w.Header().Set("Content-Type", "text/html")
+	w.Write(raw)
 }
 
 func apiForRadiusSøk(w http.ResponseWriter, r *http.Request) {
@@ -144,23 +112,37 @@ func apiForRadiusSøk(w http.ResponseWriter, r *http.Request) {
 func apiForTekstSøk(w http.ResponseWriter, r *http.Request) {
 	parkeringer := make([]ParkeringsOmraade, 0)
 	getJSON("https://www.vegvesen.no/ws/no/vegvesen/veg/parkeringsomraade/parkeringsregisteret/v1/parkeringsomraade?datafelter=alle", &parkeringer)
-
-	search := strings.ToLower(r.URL.Query().Get("search"))
-	var parkeringsSøkeresultat []ParkeringsOmraade
+	var parkeringsSøk []ParkeringsOmraade
 	antallTreff := 0
+	search := r.URL.Query().Get("search")
+	ladestasjoner := r.URL.Query().Get("ladestasjoner")
+	hc := r.URL.Query().Get("hc")
+
 	for _, parkering := range parkeringer {
-		lowerPoststed := strings.ToLower(parkering.AktivVersjon.Poststed)
-		lowerNavn := strings.ToLower(parkering.AktivVersjon.Navn)
-		if strings.HasPrefix(lowerPoststed, search) || strings.Contains(lowerNavn, search) {
-			parkeringsSøkeresultat = append(parkeringsSøkeresultat, parkering)
+		lowerParkeringPoststed := strings.ToLower(parkering.AktivVersjon.Poststed)
+		lowerSøk := strings.ToLower(search)
+		lowerSøkParkeringNavn := strings.ToLower(parkering.AktivVersjon.Navn)
+
+		if strings.Contains(lowerParkeringPoststed, lowerSøk) ||
+			strings.Contains(lowerSøkParkeringNavn, lowerSøk) {
+
+			if hc == "on" && parkering.AktivVersjon.AntallForflytnigshemmede == 0 {
+				continue
+			}
+
+			if ladestasjoner == "on" && parkering.AktivVersjon.AntallLadeplasser == 0{
+				continue
+			}
+			parkeringsSøk = append(parkeringsSøk, parkering)
 			antallTreff++
+
 			if antallTreff > 50 {
 				break
 			}
 		}
 	}
 	var result []byte
-	result, _ = json.Marshal(parkeringsSøkeresultat)
+	result, _ = json.Marshal(parkeringsSøk)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(result)
 }
