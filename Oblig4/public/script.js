@@ -5,7 +5,21 @@ var controls = {}
 var zoom = 12
 var moveTimeout = null
 var vectorLayer = null
-var map = new OpenLayers.Map("mapdiv")
+var map = new OpenLayers.Map({
+    div: "mapdiv",
+    eventListeners: {
+        featureclick: function (e) {
+            var parkid = e.feature.data.parkid
+            if (parkid) {
+                /*$('#searchResult').animate({
+                    scrollTop: $('.line-parkid-' + parkid).offset().top - 100
+                })*/
+                $('.line-parkid-' + parkid)[0].scrollIntoView()
+                $('.line-parkid-' + parkid).effect("highlight", {}, 1000)
+            }
+        }
+    }
+})
 // jquery-funksjon som kjører i det vi åpner siden
 $(function() {
     map.addLayer(new OpenLayers.Layer.OSM())
@@ -61,7 +75,7 @@ function parkingSearchResult (res) {
         features[park.id] = new OpenLayers.Feature.Vector(
             new OpenLayers.Geometry.Point(park.lengdegrad,park.breddegrad)
                 .transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()),
-            {description:park.aktivVersjon.navn}
+            {description:park.aktivVersjon.navn, parkid: park.id}
         )
         vectorLayer.addFeatures(features[park.id])
     })
@@ -86,14 +100,16 @@ function searchParking (event) {
     event.stopPropagation()
 }
 // Highlighter en spesifik parkeringsplass
-function centerOnMap (id, breddegrad, lengdegrad) {
+function centerOnMap (id, breddegrad, lengdegrad, zoom) {
     var lonLat = new OpenLayers.LonLat(lengdegrad, breddegrad)
     lonLat.transform(
         new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
         map.getProjectionObject() // to Spherical Mercator Projection
     )
-    map.setCenter(lonLat, 16)
-    //createPopup(features[id])
+    map.setCenter(lonLat, zoom)
+    if (zoom == 16) {
+        //createPopup(features[id])
+    }
 }
 // Lager en popup i openlayers.
 function createPopup (feature) {
@@ -150,19 +166,22 @@ function runSearch (event) {
 }
 
 function lagResultatListe (resultater) {
+
+    centerOnMap(resultater[0].id, resultater[0].breddegrad, resultater[0].lengdegrad, 11)
+
     var searchResults = $('#searchResult')
     searchResults.empty()
     resultater.map(function(park) {
 
         var line = $(`
-<div class="row" style="border: 2px solid #000; margin: 10px;">
+<div class="row line-parkid-${park.id}" style="border: 2px solid #000; margin: 10px;">
     <div class="col-md-12">
         <div class="row">
             <div class="col-md-10 parkering-navn">
                 <b>${park.aktivVersjon.navn}</b>
             </div>
             <div class="col-md-2" style="text-align: right;">
-                <a href="#" onClick="centerOnMap(${park.id}, ${park.breddegrad}, ${park.lengdegrad})">Vis på kart</a>
+                <a href="#" onClick="centerOnMap(${park.id}, ${park.breddegrad}, ${park.lengdegrad}, 16)">Vis på kart</a>
             </div>
         </div>
 
