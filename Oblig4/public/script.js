@@ -19,13 +19,14 @@ var map = new OpenLayers.Map({
         }
     }
 })
-map.events.register('click', map, function (e) {
+/*map.events.register('click', map, function (e) {
     var position = map.getLonLatFromPixel(e.xy);
     var lonLat = new OpenLayers.LonLat(position.lon, position.lat)
         .transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"))
 
     getParking(1500, lonLat.lon, lonLat.lat)
 })
+*/
 
 // jquery-funksjon som kjører i det vi åpner siden
 $(function() {
