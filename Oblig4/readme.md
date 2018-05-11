@@ -29,3 +29,24 @@ spesielle behov.</p>
 <p>Søket er begrenset til 150 treff.</p>
 
 <h2>Arkitektur</h2>
+<h4>Kart</h4>
+<p>Vi har brukt Open Street Map til å presentere søkeresultatene fra APIet 
+på et kart. Når man trykker søk, hentes koordinatene fra lista med treff, 
+og disse plottes inn på kartet ved hjelp av funksjoner fra Open Street 
+Maps javascriptsbibliotek «OpenLayers».</p>
+
+<h4>Søk</h4>
+<p>Webserveren eksponerer to APIer som returnerer json. Disse brukes fra 
+javascriptet til å kjøre søkefunksjonene.<br>
+Søket sender en get-forespøsel til webserveren med søkeparameter 
+(poststed/navn, filtervalg, og eventuelle koordinater fra nettleseren), 
+og får tilbake json-resultat fra overnevnte API, som plottes inn i kart 
+og resultatliste. <br>
+Hele databasen hentes fra Vegvesenet, og filtrerer basert på søkeparameter. 
+Ved lokasjonssøk (hentet fra nettleseren) filtreres og sorteres søket også 
+på avstand, slik at nærmeste parkeringsplass kommer øverst. Her har vi 
+funnet en algoritme som regner ut avstand mellom koordinater.</p>
+
+<h4>Layout</h4>
+<p>Vi har brukt Bootstrap som CSS-rammeverk, dette for å ta i bruk 
+Bootstrap’s grid-system til å lage rader og kolonner. </p>
