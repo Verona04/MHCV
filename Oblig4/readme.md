@@ -37,6 +37,8 @@ på et kart. Når man trykker søk, hentes koordinatene fra lista med treff,
 og disse plottes inn på kartet ved hjelp av funksjoner fra Open Street 
 Maps javascriptsbibliotek «OpenLayers».
 
+![Systemarkitektur](Systemarkitektur.png)
+
 #####Søk
 Webserveren eksponerer to APIer som returnerer json. Disse brukes fra 
 javascriptet til å kjøre søkefunksjonene.
@@ -52,3 +54,4 @@ funnet en algoritme som regner ut avstand mellom koordinater.
 #####Layout
 Vi har brukt Bootstrap som CSS-rammeverk, dette for å ta i bruk 
 Bootstrap’s grid-system til å lage rader og kolonner. 
+
