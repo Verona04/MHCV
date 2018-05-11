@@ -78,7 +78,7 @@ func parkeringsomraade (w http.ResponseWriter, r *http.Request) {
 	w.Write(raw)
 }
 
-func apiForRadiusSøk(w http.ResponseWriter, r *http.Request) {
+func ApiForRadiusSøk(w http.ResponseWriter, r *http.Request) {
 	var longitude, latitude, radiusMeters float64
 	longitude, _ = strconv.ParseFloat(r.URL.Query().Get("longitude"), 64)
 	latitude, _ = strconv.ParseFloat(r.URL.Query().Get("latitude"), 64)
@@ -121,7 +121,7 @@ func apiForRadiusSøk(w http.ResponseWriter, r *http.Request) {
 	w.Write(result)
 }
 
-func apiForTekstSøk(w http.ResponseWriter, r *http.Request) {
+func ApiForTekstSøk(w http.ResponseWriter, r *http.Request) {
 	parkeringer := make([]ParkeringsOmraade, 0)
 	getJSON("https://www.vegvesen.no/ws/no/vegvesen/veg/parkeringsomraade/parkeringsregisteret/v1/parkeringsomraade?datafelter=alle", &parkeringer)
 	var parkeringsSøk []ParkeringsOmraade
@@ -162,8 +162,8 @@ func apiForTekstSøk(w http.ResponseWriter, r *http.Request) {
 func main() {
 	http.HandleFunc("/", parkeringsomraade)
 	// JSON-APIer for å gjøre diverse søk
-	http.HandleFunc("/api/parkering/radius", apiForRadiusSøk)
-	http.HandleFunc("/api/parkering/search", apiForTekstSøk)
+	http.HandleFunc("/api/parkering/radius", ApiForRadiusSøk)
+	http.HandleFunc("/api/parkering/search", ApiForTekstSøk)
 	// Gjør filer i public/ tilgjengelig fra websiden.
 	http.Handle("/public/", http.StripPrefix("/public/", http.FileServer(http.Dir("Oblig4/public/"))))
 	log.Fatal(http.ListenAndServe(":8080", nil))
