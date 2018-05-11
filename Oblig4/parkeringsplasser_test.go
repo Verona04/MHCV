@@ -2,24 +2,27 @@ package main
 
 import (
 	"testing"
-	"math"
+
 	"net/http"
 	"net/http/httptest"
 )
 
-func TestHsin(t *testing.T) {
-	expected := math.Pow(math.Sin(5/2),2)
-	actual := math.Pow(math.Sin(5/2),2)
-	if actual != expected {
-		t.Errorf("Test failed, expected: '%s' got: '%s'", expected, actual)
+func TestDistance(t *testing.T) {
+
+	meter := distance(58.16064, 8.068607, 58.16060, 8.068600)
+
+	if meter != 4.47168869270202 {
+		t.Errorf("distance returned wrong meters: got %v want %v",
+			meter, 4.47168869270202)
 	}
+
 }
 
 func TestApiForTekstSøk(t *testing.T) {
 	//
 	req, err := http.NewRequest("GET", "/api/parkering/search/?search=tommelitenvei", nil)
-	if err != nil {
-		t.Fatal(err)
+		if err != nil {
+			t.Fatal(err)
 	}
 
 	rr := httptest.NewRecorder()
