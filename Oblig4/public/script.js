@@ -90,14 +90,7 @@ function getParking(radius, longitude, latitude) {
         '&longitude=' + longitude +
         '&latitude=' + latitude+'&hc=' + hc + '&ladestasjoner=' + ladestasjoner).then(parkingSearchResult)
 }
-// Oppslag for parkering innenfor en gitt søketekst.
-function searchParking (event) {
-    enableRecenter = true
-    var search = document.getElementById('search').value
-    $.get('/api/parkering/search?search=' + search).then(parkingSearchResult)
-    event.preventDefault()
-    event.stopPropagation()
-}
+
 // Highlighter en spesifik parkeringsplass
 function centerOnMap (id, breddegrad, lengdegrad, zoom) {
     var lonLat = new OpenLayers.LonLat(lengdegrad, breddegrad)
@@ -154,7 +147,7 @@ function runSearch (event) {
     var searchTerm = document.getElementById('search').value
     var hc = document.getElementById('hc').checked ? 'on' : ''
     var ladestasjoner = document.getElementById('ladestasjoner').checked ? 'on' : ''
-
+    enableRecenter = true
     $.get(
         '/api/parkering/search?search=' + searchTerm + '&hc=' + hc + '&ladestasjoner=' + ladestasjoner
     ).then(parkingSearchResult)
